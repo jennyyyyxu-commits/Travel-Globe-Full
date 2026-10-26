@@ -1,0 +1,212 @@
+:root {
+  --gold: #C9A66B;        /* premium gold accent */
+  --bg: #04070F;          /* deep space background */
+  --card: rgba(12, 16, 30, .9);
+  --line: rgba(255, 255, 255, .14);
+  --muted: rgba(255, 255, 255, .5);
+  --text: #ECEAE2;
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; height: 100%; overflow: hidden; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+#globe-container { position: fixed; inset: 0; }
+#globe-container canvas { display: block; }
+
+/* ===== Header ===== */
+.site-header {
+  position: fixed; top: 34px; left: 44px; z-index: 10;
+  pointer-events: none;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, .6);
+}
+.site-header h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 38px; font-weight: 800;
+  font-style: italic;
+  letter-spacing: 3px; margin: 0;
+  color: #F5F1E6;
+}
+.site-header h1::first-letter { color: var(--gold); }
+.site-header .stats {
+  margin: 12px 0 0 3px;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold);
+  opacity: .85;
+}
+
+/* ===== Bottom hint ===== */
+.hint {
+  position: fixed; bottom: 26px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 10; pointer-events: none;
+  font-size: 11px; font-weight: 300;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ===== Globe markers are WebGL-rendered (labels + rings), see main.js ===== */
+
+/* ===== Diary modal ===== */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 20;
+  background: rgba(2, 4, 10, .6);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transition: opacity .35s ease, visibility .35s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+
+.diary-card {
+  --city: var(--gold);
+  width: min(620px, 94vw); max-height: 88vh; overflow-y: auto;
+  background: var(--card);
+  backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid var(--line);
+  color: var(--text);
+  border-radius: 20px; position: relative;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, .7);
+  transform: translateY(26px) scale(.97);
+  transition: transform .35s ease;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.25) transparent;
+}
+.modal-overlay.open .diary-card { transform: translateY(0) scale(1); }
+
+.cover-wrap { position: relative; }
+.diary-card img#diary-cover {
+  width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+  display: block; background: #10141F;
+  border-radius: 20px 20px 0 0;
+}
+.cover-wrap::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 70px;
+  background: linear-gradient(to top, var(--card), transparent);
+  pointer-events: none;
+}
+
+.thumb-row {
+  position: absolute; left: 14px; right: 14px; bottom: 14px;
+  display: flex; gap: 8px; z-index: 2;
+  overflow-x: auto; padding-bottom: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.35) transparent;
+}
+.thumb-row img {
+  width: 52px; height: 40px; object-fit: cover;
+  border-radius: 8px; cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, .35);
+  opacity: .75; transition: opacity .2s, border-color .2s;
+}
+.thumb-row img:hover { opacity: 1; }
+.thumb-row img.active {
+  opacity: 1; border-color: var(--city);
+}
+
+.diary-body { padding: 22px 34px 34px; }
+
+.diary-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+.date-chip {
+  background: var(--city);
+  color: #0A0D16;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 13px; border-radius: 20px;
+}
+.place {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 4px; text-transform: uppercase;
+  color: var(--muted);
+}
+
+#diary-title {
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 32px; font-weight: 800;
+  letter-spacing: 1px; margin: 0 0 18px;
+  color: #F5F1E6;
+}
+
+/* City info */
+.info-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.info-label {
+  display: block;
+  font-size: 9.5px; font-weight: 600;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--city);
+  margin-bottom: 6px;
+}
+.info-value {
+  font-size: 12.5px; font-weight: 300;
+  line-height: 1.6; color: rgba(255, 255, 255, .85);
+  display: block;
+}
+
+.history {
+  margin-top: 16px;
+  border-left: 2px solid var(--city);
+  padding-left: 14px;
+}
+.history p {
+  margin: 0;
+  font-size: 13px; font-weight: 300;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, .8);
+  text-align: justify;
+}
+
+/* Travel tips */
+.tips { margin-top: 22px; background: rgba(255, 255, 255, .04); border-radius: 12px; padding: 18px 22px 20px; }
+.tips h3 {
+  margin: 0 0 12px;
+  font-family: "Inter", sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 3px; text-transform: uppercase;
+  color: var(--city);
+}
+.tips ol { margin: 0; padding-left: 22px; }
+.tips li {
+  font-size: 13px; font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255, 255, 255, .82);
+  margin: 0 0 6px;
+  padding-left: 4px;
+}
+.tips li::marker {
+  color: var(--city);
+  font-weight: 600;
+}
+
+.close-btn {
+  position: absolute; top: 14px; right: 14px; z-index: 3;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .25);
+  cursor: pointer;
+  background: rgba(4, 7, 15, .55); color: #fff;
+  font-size: 20px; line-height: 1;
+  backdrop-filter: blur(4px);
+  transition: background .2s, border-color .2s;
+}
+.close-btn:hover { background: var(--city); border-color: var(--city); color: #0A0D16; }
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+  .site-header { top: 20px; left: 22px; }
+  .site-header h1 { font-size: 27px; letter-spacing: 2px; }
+  .diary-body { padding: 18px 22px 26px; }
+  #diary-title { font-size: 24px; }
+  .info-grid { grid-template-columns: 1fr; gap: 12px; }
+  .hint { font-size: 10px; letter-spacing: 2px; }
+}
