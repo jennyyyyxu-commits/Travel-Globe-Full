@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Steps · A Journey Around the World</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 3D globe container -->
+  <div id="globe-container"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <h1>Travel Steps</h1>
+    <p class="stats" id="stats"></p>
+  </header>
+
+  <!-- Bottom hint -->
+  <div class="hint">Drag to rotate · Scroll to zoom · Click a marker to read the diary</div>
+
+  <!-- Diary modal -->
+  <div class="modal-overlay" id="modal-overlay">
+    <article class="diary-card" id="diary-card">
+      <button class="close-btn" id="close-btn" aria-label="Close">&times;</button>
+
+      <div class="cover-wrap">
+        <img id="diary-cover" src="" alt="City cover">
+        <div class="thumb-row" id="thumb-row"></div>
+      </div>
+
+      <div class="diary-body">
+        <div class="diary-meta">
+          <span class="date-chip" id="diary-date"></span>
+          <span class="place" id="diary-place"></span>
+        </div>
+        <h2 id="diary-title"></h2>
+
+        <div class="info-grid">
+          <div class="info-cell">
+            <span class="info-label">Coordinates</span>
+            <span class="info-value" id="info-coord"></span>
+          </div>
+          <div class="info-cell">
+            <span class="info-label">Climate</span>
+            <span class="info-value" id="info-climate"></span>
+          </div>
+          <div class="info-cell">
+            <span class="info-label">Terrain</span>
+            <span class="info-value" id="info-terrain"></span>
+          </div>
+        </div>
+
+        <div class="history">
+          <span class="info-label">History &amp; Culture</span>
+          <p id="info-history"></p>
+        </div>
+
+        <div class="tips">
+          <h3>Travel Diary · Tips</h3>
+          <ol id="diary-tips"></ol>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js"></script>
+  <script src="data.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
